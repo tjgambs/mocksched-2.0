@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{instructor}} - {{overall_quality}}</title>
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/icon.png" %}" />
+	<script type="text/javascript" src="{% static "js/jquery-3.1.0.min.js" %}"></script> 
+	<script type="text/javascript" src="{% static "js/select2.full.js" %}"></script>
+	<script type="text/javascript" src="{% static "js/jquery.tablesorter.min.js" %}"></script>
+	<script type="text/javascript" src="{% static "js/jquery.simplePagination.js" %}"></script>
+
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400|Merriweather:300,300italic" />
+	<link rel="stylesheet" type="text/css" href="{% static "css/select2.css" %}">
+	<link rel="stylesheet" type="text/css" href="{% static "css/stylesheet.css" %}">
+	<link rel="stylesheet" type="text/css" href="{% static "css/simplePagination.css" %}">
+</head>
+<style type="text/css">
+	#left {
+	    width: 200px;
+	    height: 150px;
+	    float: left;
+	    padding-bottom:30px;
+	    padding-top: 20px;
+	}
+	#right {
+	    height: 150px;
+	    margin-left: 200px; 
+	    padding-bottom: 30px;
+	    padding-top: 20px;
+	}
+	ul.pagination {
+	    display: inline-block;
+	    padding: 0;
+	    margin: 0;
+	}
+	ul.pagination li {
+		display: inline;
+	}
+	ul.pagination li a {
+	    color: black;
+	    float: left;
+	    padding: 8px 16px;
+	    text-decoration: none;
+	    transition: background-color .3s;
+	    border: 1px solid #ddd;
+	    margin: 0 4px;
+	    border-radius: 4px;
+	}
+	ul.pagination li a.active {
+	    background-color: #F2F2F2;
+	    border-radius: 4px;
+	    color: #333;
+	    border: 1px solid #aaa;
+	}
+	ul.pagination li a:hover:not(.active) {
+		background-color: #ddd;
+	}
+</style>
+<body>
+	<div class="right" class="inner">
+		<h3>
+			<a href="/cart" style="text-decoration:none; color:#333;" id="course-cart">Course Cart (0)</a>
+		</h3>
+	</div>
+	<span>
+		<h1 style="float:left; padding: 0px; padding-right:2%;"><a href="/" style="text-decoration:none; color:#333;">MockSched</a></h1>
+		<div style="display: inline-block; padding-right:10px">
+			<select id="subjects">
+				<option id="all">All</option>
+				{% for o in subjects %}
+					<option id="{{o.subject}}">{{o.subject}} - {{o.descr}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div style="display: inline-block; padding-right:10px">
+			<input type="text" class="number inputbox" placeholder="NUMBER" style="width:100px;">
+		</div>
+		<div style="display: inline-block;">
+			<div style="style=padding: 5%;">
+				<form id="post-form">
+					<input class="search-button" type="submit" value="SEARCH">
+				</form>
+			</div>
+		</div>
+	</span>
+	<div>
+	<br /><hr>
+	<h1>{{instructor}}</h1>
+	<hr>
+	<div>
+		<h2>
+			Overall Quality: {{overall_quality}}<br><br>
+			Helpfulness: {{helpfulness}}<br>
+			Clarity: {{clarity}}<br>
+			Easiness: {{easiness}}
+		</h2>
+	</div>
+	<h1>Student Reviews</h1>
+	<hr>
+
+	{% for r in reviews %}
+	<div>
+		<div id="container" class="review"><div id="left">		
+			Date: {{r.date}}<br>
+			Class Name: {{r.class}}<br>
+			Helpfulness: {{r.helpful}}<br>
+			Clarity: {{r.clarity}}<br>
+			Easiness: {{r.easy}}<br>
+			Grade Received: {{r.grade}}<br>
+		</div>
+		<div id="right">
+			<div>
+				{{r.comments}}
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+
+	<div align="right">
+		<ul class="pagination">
+			{% for i in pages %}
+				{% if i.number == currentPage %}
+					<li><a class="active" href="{{i.href}}">{{ i.number }}</a></li>
+					{% else %}
+					<li><a href="{{i.href}}">{{ i.number }}</a></li>
+				{% endif %}
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="center ital" style="padding: 2%;">Contact the <a href="mailto:mocksched@gmail.com?subject=MockSched">Developer</a></div>
+</body>
+<script type="text/javascript">
+	$('#post-form').on('submit', function(event){
+		submit();
+	});
+
+	function submit() {
+		event.preventDefault();
+		var subjectSelect = document.getElementById("subjects");
+		var subject = subjectSelect.options[subjectSelect.selectedIndex].id;
+		var textBox = document.getElementsByClassName("number inputbox")[0].value;
+		if (textBox.length > 0) {
+			document.location = '/search/{{stream}}/' + subject + '/' + textBox + '/';
+		} else {
+			document.location = '/search/{{stream}}/' + subject + '/';
+		}
+	}
+
+	$(".number").keyup(function(e) {
+		if (e.keyCode == 13) {
+			submit();
+		}
+	});
+
+	$(document).ready(function() {
+		$('#subjects option:contains("{{currentSubject}}")').prop({selected: true});
+		document.getElementsByClassName('number inputbox')[0].value = '{{currentClassNumber}}';
+		$("#subjects").select2();
+	});
+</script>
+</html>

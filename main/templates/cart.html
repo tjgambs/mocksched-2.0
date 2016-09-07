@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MockSched - Course Cart</title>
+
+		<!-- <link rel="shortcut icon" href="../../icon.png" />
+
+		<link rel="stylesheet" href="../../css/fullcalendar.css" />
+		<link rel="stylesheet" href="../../css/fullcalendar.print.css" media="print" />
+		<link rel="stylesheet" href="../../css/tipuesearch.css" />
+		<link rel="stylesheet" href="../../css/stylesheet.css" />
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400|Merriweather:300,300italic" />
+		<link rel="stylesheet" href="../../css/select2.css" />
+        
+        <script src="../../js/jquery.min.js"></script>
+        <script src="../../js/select2.full.js"></script>
+		<script src='../../js/moment.min.js'></script>
+		<script src='../../js/fullcalendar.min.js'></script>
+		<script src="../../js/jquery.tablesorter.min.js"></script>
+		<script src="js/course-cart.min.js"></script> -->
+		{% load staticfiles %}
+		<link rel="shortcut icon" href="{% static "img/icon.png" %}" />
+		<script type="text/javascript" src="{% static "js/jquery-3.1.0.min.js" %}"></script> 
+		<script type="text/javascript" src="{% static "js/select2.full.js" %}"></script>
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400|Merriweather:300,300italic" />
+		<link rel="stylesheet" type="text/css" href="{% static "css/select2.css" %}">
+		<link rel="stylesheet" type="text/css" href="{% static "css/stylesheet.css" %}">
+
+	</head>
+<body>
+	<div>
+		<div class="right" class="inner">
+		<h3>
+			<a href="/cart" style="text-decoration:none; color:#333;" id="course-cart">Course Cart (0)</a>
+		</h3>
+	</div>
+	<span>
+		<h1 style="float:left; padding: 0px; padding-right:2%;"><a href="/" style="text-decoration:none; color:#333;">MockSched</a></h1>
+		<div style="display: inline-block; padding-right:10px">
+			<select id="subjects">
+				<option id="all">All</option>
+				{% for o in subjects %}
+					<option id="{{o.subject}}">{{o.subject}} - {{o.descr}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div style="display: inline-block; padding-right:10px">
+			<input type="text" class="number inputbox" placeholder="NUMBER" style="width:100px;">
+		</div>
+		<div style="display: inline-block;">
+			<div style="style=padding: 5%;">
+				<form id="post-form">
+					<input class="search-button" type="submit" value="SEARCH">
+				</form>
+			</div>
+		</div>
+	</span>
+	<div>
+	<br /><hr>
+
+	<div class="center">
+		<div style="padding-bottom: 1%;">
+			<h1><a href="/cart" style="text-decoration:none; color:#333;">Course Cart</a></h1>
+			<h3>DePaul University</h3>
+			<div align="center" style="padding-top:10px;">
+				<select id="terms">
+					{% for o in terms %}
+						<option id="{{o.strm}}">{{o.descr}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div id="cart"></div>
+	</div>
+	<div class="center ital" style="padding: 2%;">Contact the <a href="mailto:mocksched@gmail.com?subject=MockSched">Developer</a></div>
+</body>
+<script>
+
+	$('#post-form').on('submit', function(event){
+		submit();
+	});
+
+	function submit() {
+		event.preventDefault();
+		var subjectSelect = document.getElementById("subjects");
+		var subject = subjectSelect.options[subjectSelect.selectedIndex].id;
+		var textBox = document.getElementsByClassName("number inputbox")[0].value;
+		var streamSelect = document.getElementById('terms');
+		var stream = streamSelect.options[streamSelect.selectedIndex].id;
+
+		if (textBox.length > 0) {
+			document.location = '/search/' + stream + '/' + subject + '/' + textBox + '/';
+		} else {
+			document.location = '/search/' + stream + '/'+ subject + '/';
+		}
+	}
+
+	$(".number").keyup(function(e) {
+		if (e.keyCode == 13) {
+			submit();
+		}
+	});
+
+	$(document).ready(function() {
+		$("#terms").select2();
+		$("#subjects").select2();
+	});
+
+
+</script>
+</html>

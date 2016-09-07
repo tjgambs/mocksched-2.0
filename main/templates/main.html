@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mocksched</title>
+	{% load staticfiles %}
+	<link rel="shortcut icon" href="{% static "img/icon.png" %}" />
+	<script type="text/javascript" src="{% static "js/jquery-3.1.0.min.js" %}"></script> 
+	<script type="text/javascript" src="{% static "js/select2.full.js" %}"></script>
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400|Merriweather:300,300italic" />
+	<link rel="stylesheet" type="text/css" href="{% static "css/select2.css" %}">
+	<link rel="stylesheet" type="text/css" href="{% static "css/stylesheet.css" %}">
+</head>
+<body>
+	<div class="right" class="inner">
+		<h3>
+			<a href="/cart" style="text-decoration:none; color:#333;" id="course-cart">Course Cart (0)</a>
+		</h3>
+	</div>
+	<div align="center">
+		<h1><a href="/" style="text-decoration:none; color:#333;">Mocksched</a></h1>
+		<h3>DePaul University</h3>
+	</div>
+	<div align="center">
+		<div id="term-div" style="width:100%; padding-top:10px;">
+			<select id="terms">
+				{% for o in terms %}
+					<option id="{{o.strm}}">{{o.descr}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<form id="post-form" style="text-align: center;">
+		<div style="display: inline-block; padding-right:10px">
+			<div style="padding: 3%; text-align:left;">COURSE PREFIX</div>
+			<select id="subjects">
+				<option id="all">All</option>
+				{% for o in subjects %}
+					<option id="{{o.subject}}">{{o.subject}} - {{o.descr}}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div style="display: inline-block; padding-right:10px">
+			<div style="padding: 3%; text-align:left;">NUMBER</div>
+			<input type="text" class="number inputbox">
+		</div>
+		
+		<input class="search-button" type="submit" value="SEARCH">
+	</form>
+
+	<br /><hr>
+
+	<div id="classes"></div>
+	<div class="center ital" style="padding: 2%;">Contact the <a href="mailto:mocksched@gmail.com?subject=MockSched">Developer</a></div>
+</body>
+
+<script type="text/javascript">
+	
+	$('#post-form').on('submit', function(event){
+		event.preventDefault();
+		var termSelect = document.getElementById("terms");
+		var stream = termSelect.options[termSelect.selectedIndex].id;
+		var subjectSelect = document.getElementById("subjects");
+		var subject = subjectSelect.options[subjectSelect.selectedIndex].id;
+		var textBox = document.getElementsByClassName("number inputbox")[0].value;
+		if (textBox.length > 0)
+			document.location = '/search/' + stream + '/' + subject + '/' + textBox + '/'
+		else
+			document.location = '/search/' + stream + '/' + subject + '/'
+	});
+
+	$(document).ready(function() {
+		$("#terms").select2();
+		$("#subjects").select2();
+	});
+
+</script>
+</html>
