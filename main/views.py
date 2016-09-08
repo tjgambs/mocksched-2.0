@@ -44,32 +44,33 @@ def add_to_cart(request):
 		else:
 			request.session['courseCart'].append(data)
 
-		print request.session.get('courseCart')
+		print(request.session.get('courseCart'))
 		return HttpResponse('Location endpoint.')
 	else:
 		return HttpResponse('Location endpoint.')
 
 
 def getTerms():
-	terms = urllib.urlopen('http://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx?action=getterms').read()
-	json_terms = json.loads(terms)
+	with urllib.request.urlopen('http://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx?action=getterms') as data:
+		terms=data.read()
+	json_terms = json.loads(terms.decode('utf-8'))
 	return json_terms
 
 def getSubjects():
-	subjects = urllib.urlopen('http://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx?action=getsubjects').read()
-	json_subjects = json.loads(subjects)
+	subjects = urllib.request.urlopen('http://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx?action=getsubjects').read()
+	json_subjects = json.loads(subjects.decode('utf-8'))
 	return json_subjects
 
 def getClasses(stream,subject,catalog_nbr):
-	classes = urllib.urlopen('http://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx?action=searchclassbysubject&strm={0}&subject={1}&catalog_nbr={2}'.format(stream,subject,catalog_nbr)).read()
-	json_classes = json.loads(classes)
+	classes = urllib.request.urlopen('http://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx?action=searchclassbysubject&strm={0}&subject={1}&catalog_nbr={2}'.format(stream,subject,catalog_nbr)).read()
+	json_classes = json.loads(classes.decode('utf-8'))
 	class_data = classData()
 	num = 0
 	for j in json_classes:
 		for k in j['classes']:
 			try:
 				k['data'] = class_data.get(k['subject'] + ' ' + k['catalog_nbr'])['@ows_DESCR']
-			except Exception,e:
+			except Exception as e:
 				k['data'] = 'No course description preview available. Click to find out more about ' + k['subject'] + ' ' + k['catalog_nbr'] + "."
 			num+=1
 	return [json_classes,num]
@@ -118,14 +119,14 @@ def classData():
 
 def page(request,stream,subject,num):
 	ratings = getRatings()
-	course = urllib.urlopen('http://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx?action=getcourse&strm={0}&subject={1}&catalog_nbr={2}'.format(stream,subject,num)).read()
-	json_course = json.loads(course)
+	course = urllib.request.urlopen('http://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx?action=getcourse&strm={0}&subject={1}&catalog_nbr={2}'.format(stream,subject,num)).read()
+	json_course = json.loads(course.decode('utf-8'))
 	template = get_template('page.html')
 	name = json_course.get('descr')
 	description = json_course.get('descrlong')
 
-	classes = urllib.urlopen('http://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx?action=getclasses&strm={0}&subject={1}&catalog_nbr={2}'.format(stream,subject,num)).read()
-	json_classes = json.loads(classes)
+	classes = urllib.request.urlopen('http://offices.depaul.edu/_layouts/DUC.SR.ClassSvc/DUClassSvc.ashx?action=getclasses&strm={0}&subject={1}&catalog_nbr={2}'.format(stream,subject,num)).read()
+	json_classes = json.loads(classes.decode('utf-8'))
 	headers = ['Add','Rating','Status','Credits','Instructor','Start','End','Section','Number','Location','Days']
 	arr = []
 	pk_ids = []
@@ -169,10 +170,10 @@ def page(request,stream,subject,num):
 	return HttpResponse(template.render(context))
 
 def getRatings():
-	law = urllib.urlopen('http://search.mtvnservices.com/typeahead/suggest/?solrformat=true&rows=10&q=*%253A*+AND+schoolid_s%253A5485&defType=edismax&qf=teacherfullname_t%255E1000+autosuggest&bf=pow(total_number_of_ratings_i%252C2.1)&sort=&siteName=rmp&rows=1000000000&start=0&fl=pk_id+teacherfirstname_t+teacherlastname_t+averageratingscore_rf+averagehelpfulscore_rf+averageclarityscore_rf+averageeasyscore_rf').read()
-	json_law = json.loads(law)
-	regular = urllib.urlopen('http://search.mtvnservices.com/typeahead/suggest/?solrformat=true&rows=10&q=*%253A*+AND+schoolid_s%253A1389&defType=edismax&qf=teacherfullname_t%255E1000+autosuggest&bf=pow(total_number_of_ratings_i%252C2.1)&sort=&siteName=rmp&rows=1000000000&start=0&fl=pk_id+teacherfirstname_t+teacherlastname_t+averageratingscore_rf+averagehelpfulscore_rf+averageclarityscore_rf+averageeasyscore_rf').read()
-	json_regular = json.loads(regular)
+	law = urllib.request.urlopen('http://search.mtvnservices.com/typeahead/suggest/?solrformat=true&rows=10&q=*%253A*+AND+schoolid_s%253A5485&defType=edismax&qf=teacherfullname_t%255E1000+autosuggest&bf=pow(total_number_of_ratings_i%252C2.1)&sort=&siteName=rmp&rows=1000000000&start=0&fl=pk_id+teacherfirstname_t+teacherlastname_t+averageratingscore_rf+averagehelpfulscore_rf+averageclarityscore_rf+averageeasyscore_rf').read()
+	json_law = json.loads(law.decode('utf-8'))
+	regular = urllib.request.urlopen('http://search.mtvnservices.com/typeahead/suggest/?solrformat=true&rows=10&q=*%253A*+AND+schoolid_s%253A1389&defType=edismax&qf=teacherfullname_t%255E1000+autosuggest&bf=pow(total_number_of_ratings_i%252C2.1)&sort=&siteName=rmp&rows=1000000000&start=0&fl=pk_id+teacherfirstname_t+teacherlastname_t+averageratingscore_rf+averagehelpfulscore_rf+averageclarityscore_rf+averageeasyscore_rf').read()
+	json_regular = json.loads(regular.decode('utf-8'))
 	complete = json_law['response']['docs'] + json_regular['response']['docs']
 	dic = {}
 	for c in complete:
@@ -205,8 +206,8 @@ def formatDays(obj):
 
 
 def teacher(request,tid,page,average_rating,average_helpful,average_clarity,average_easy,name,stream,subject,num):
-	reviews = urllib.urlopen('http://www.ratemyprofessors.com/paginate/professors/ratings?tid={0}&page={1}'.format(tid,page)).read()
-	json_data = json.loads(reviews)
+	reviews = urllib.request.urlopen('http://www.ratemyprofessors.com/paginate/professors/ratings?tid={0}&page={1}'.format(tid,page)).read()
+	json_data = json.loads(reviews.decode('utf-8'))
 	json_reviews = json_data['ratings']
 	reviews = []
 	for j in json_reviews:
