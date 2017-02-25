@@ -9,6 +9,14 @@
 	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400|Merriweather:300,300italic" />
 	<link rel="stylesheet" type="text/css" href="{% static "css/select2.css" %}">
 	<link rel="stylesheet" type="text/css" href="{% static "css/stylesheet.css" %}">
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
+		ga('create', 'UA-70030211-1', 'auto');
+		ga('send', 'pageview');
+	 </script>
 </head>
 <body>
 	<div class="right" class="inner">
@@ -45,15 +53,6 @@
 			<div style="padding: 3%; text-align:left;">NUMBER</div>
 			<input type="text" class="number inputbox">
 		</div>
-		
-		<div style="display: inline-block; padding-right:10px">
-			<div style="padding: 3%; text-align:left;">TIME FROM</div>
-			<input type="text" class="number inputbox">
-		</div>
-		<div style="display: inline-block; padding-right:10px">
-			<div style="padding: 3%; text-align:left;">TIME END</div>
-			<input type="text" class="number inputbox">
-		</div>
 
 		<input class="search-button" type="submit" value="SEARCH">
 	</form>
@@ -73,18 +72,15 @@
 		var subjectSelect = document.getElementById("subjects");
 		var subject = subjectSelect.options[subjectSelect.selectedIndex].id;
 		var textBox = document.getElementsByClassName("number inputbox")[0].value;
-
-    if (textBox.length > 0) {
+	    if (textBox.length > 0) {
 			document.location = '/search/' + stream + '/' + subject + '/' + textBox;
-    } else {
+	    } else {
 			document.location = '/search/' + stream + '/' + subject + '/';
-    }
+	    }
 	});
 
-	$(document).ready(function() {
-		$("#terms").select2();
-		$("#subjects").select2();
-	});
+	$("#terms").select2();
+	$("#subjects").select2();
 
 </script>
 </html>

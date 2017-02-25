@@ -10,6 +10,14 @@
 	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400|Merriweather:300,300italic" />
 	<link rel="stylesheet" type="text/css" href="{% static "css/select2.css" %}">
 	<link rel="stylesheet" type="text/css" href="{% static "css/stylesheet.css" %}">
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
+		ga('create', 'UA-70030211-1', 'auto');
+		ga('send', 'pageview');
+	 </script>
 </head>
 <body>
 	<div class="right" class="inner">
@@ -51,7 +59,8 @@
 		<tbody>
 			{% for c in classes %}
 				<tr>
-				<td><input id="{{c.7}}" onclick="addToCart({{c.7}})" type="image" src="{% static "img/add.png" %}" width="20"></input></td>
+				<!-- <td><input id="{{c.7}}" onclick="addToCart({{c.7}})" type="image" src="{% static "img/add.png" %}" width="20"></input></td> -->
+				<td><image src="{% static "img/add.png" %}" width="20" </image></td>
 				{% for d in c %}
 					<td>{{d|safe}}</td>
 				{% endfor %}
@@ -121,16 +130,16 @@
 		}
 	});
 
+	$("#subjects").select2();
 	$(document).ready(function() {
 		$('#subjects option:contains("{{currentSubject}}")').prop({selected: true});
 		document.getElementsByClassName('number inputbox')[0].value = '{{currentClassNumber}}';
-		$("#subjects").select2();
 		$("#myTable").tablesorter({
 			sortInitialOrder: 'desc',
 			headers: {
-		  		0: { sorter: "digit", string: "min" },
-				4: { sorter: 'time'},
-				5: { sorter: 'time'}
+		  		1: { sorter: "digit", string: "min" },
+				5: { sorter: 'time'},
+				6: { sorter: 'time'}
 			}
 		});
 		
